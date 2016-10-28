@@ -1,7 +1,13 @@
 from PIL import Image
 import numpy as np
+import sys
 
-im = Image.open('Images/example1.jpg')
+if len(sys.argv) < 3:
+    print "Please specify the input image and output name. ie. python slice_image.py Images/Image_0006_0000.jpg Images/Chunks/pretty_chunks"
+    sys.exit()
+image_filename = sys.argv[1]
+destination_filename = sys.argv[2]
+im = Image.open(image_filename)
 # im = im.convert('1')
 
 pixels = list(im.getdata())
@@ -24,4 +30,4 @@ for i in range(0, len(slices)):
     print chunk.shape
     chunk = np.uint8(chunk)
     newImage = Image.fromarray(chunk)
-    newImage.save('chunk' + str(i) + '.png')
+    newImage.save(destination_filename + str(i) + '.png')
