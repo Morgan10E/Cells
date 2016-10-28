@@ -16,3 +16,11 @@ ds = SupervisedDataSet(numPixels, 1)
 
 # add the files to the dataset
 ds.addSample(features, (numCells,))
+
+# train the network
+trainer = BackpropTrainer(net, ds)
+for i in range(10):
+	print trainer.train()
+
+# activate the net on the dataset to see what we get
+net.activate(features)
