@@ -24,4 +24,4 @@ for i in range(0, len(slices)):
     print chunk.shape
     chunk = np.uint8(chunk)
     newImage = Image.fromarray(chunk)
-    newImage.save('chunk' + str(i) + '.png')
+    newImage.save('Sliced/chunk' + str(i) + '.png')
