@@ -1,5 +1,7 @@
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.datasets import SupervisedDataSet
+from pybrain.datasets import ClassificationDataSet
+from pybrain.structure.modules import SoftmaxLayer
 import numpy
 import csv
 from PIL import Image

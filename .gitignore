@@ -1,3 +1,6 @@
 .DS_Store
 Images/
 Sliced/
+Originals/
+*.txt
+*.csv

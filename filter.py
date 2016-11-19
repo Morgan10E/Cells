@@ -3,6 +3,8 @@ import math
 import numpy as np
 from scipy import ndimage
 import sys
+import csv
+import subprocess
 from os import listdir, path
 
 if len(sys.argv) < 2:
@@ -11,8 +13,20 @@ if len(sys.argv) < 2:
 directory_name = sys.argv[1]
 
 dirFiles = listdir(directory_name)
+csvFilename = directory_name
+fileHistMap = {}
+fileCountMap = {}
 for filename in dirFiles:
     if not filename.endswith('tiff'):
+        if filename.endswith('csv'):
+            csvFilename += filename
+            subprocess.call("cut -d, -f4,6 < " + csvFilename + " > temp.txt", shell=True)
+            with open("temp.txt") as f:
+                for line in f:
+                    if line[0] == 'P':
+                        continue
+                    vals = line.split(",")
+                    fileCountMap[vals[0]] = int(vals[1])
         continue
     image = Image.open(directory_name + filename)
 
@@ -47,6 +61,7 @@ for filename in dirFiles:
     # angleArray = numBins*[0]
     # magnitudeArray = numBins*[0]
     histogram = numBins*[0]
+    total = 0.0
     counts = numBins*[0]
     #
     # smallest = float('inf')
@@ -60,6 +75,7 @@ for filename in dirFiles:
         #     smallest = horData[i]
         # angleArray.append(angle)
         magnitude = math.hypot(verData[i], horData[i])
+        total += magnitude
         # magnitudeArray.append(magnitude)
         binIdx = int(angle/binSize)%numBins
         counts[binIdx] += 1
@@ -69,9 +85,38 @@ for filename in dirFiles:
             nextBinIdx = (binIdx + 1)%numBins
         histogram[binIdx] += (binSize - abs(remainder))/binSize*magnitude
         histogram[nextBinIdx] += abs(remainder)/binSize*magnitude
-    print histogram
+    for i in range(numBins):
+        histogram[i] /= (total * 1.0)
+    filenumber = filename.split(".")
+    fileHistMap[filenumber[0]] = histogram
+    # print filenumber[0], histogram
     # print counts
     # print '.'
+foldername = directory_name.split("/")
+foldername = foldername[-2]
+avg_hist = [0.0] * numBins
+numzeros = 0
+for filenum, hist in fileHistMap.iteritems():
+    count = fileCountMap[filenum]
+    if count == 0:
+        numzeros += 1
+        for i in range(numBins):
+            avg_hist[i] += hist[i]
+for i in range(numBins):
+    avg_hist[i] /= numzeros
+
+with open(foldername + ".csv", "w") as myfile:
+    wr = csv.writer(myfile)
+    for filenum, count in fileCountMap.iteritems():
+        if count > 2:
+            count = 2 # since we only care about 0, 1, or more than 1
+        outList = list(fileHistMap[filenum])
+        for i in range(numBins):
+            outList[i] -= avg_hist[i]
+        outList.append(count)
+        wr.writerow(outList)
+        # print fileHistMap[filenum], ":" + str(count)
+
 
 # print biggest
 # print smallest
