@@ -61,17 +61,14 @@ def WriteOutputFile(foldername, fileCountMap, featureMap):
             outList.append(count)
             wr.writerow(outList)
 
-if len(sys.argv) < 2:
-    print "Please specify the directory and number of files to put into the csv ie python csv_writer.py data_directory 100"
-    sys.exit()
-directory_name = sys.argv[1]
-
-dirFiles = listdir(directory_name)
-csvs = [f for f in dirFiles if f.endswith('csv')]
-countFilename = directory_name + csvs[0]
-foldername = directory_name.split("/")
-foldername = foldername[-2]
-fileCountMap = CreateCountMap(countFilename)
-featureMap = ExtractAllFeatures(directory_name, dirFiles)
-print "Done processing files"
-WriteOutputFile(foldername, fileCountMap, featureMap)
+def RunExtraction(directory_name):
+    dirFiles = listdir(directory_name)
+    csvs = [f for f in dirFiles if f.endswith('csv')]
+    countFilename = directory_name + csvs[0]
+    foldername = directory_name.split("/")
+    foldername = foldername[-2]
+    fileCountMap = CreateCountMap(countFilename)
+    featureMap = ExtractAllFeatures(directory_name, dirFiles)
+    print "Done processing files"
+    WriteOutputFile(foldername, fileCountMap, featureMap)
+    return foldername + ".csv"
