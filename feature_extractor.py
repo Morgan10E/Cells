@@ -6,6 +6,7 @@ import sys
 import csv
 import subprocess
 from os import listdir, path
+from fft_extractor import fftExtractor
 
 def CreateCountMap(csvFilename):
     fileCountMap = {}
@@ -72,6 +73,6 @@ countFilename = directory_name + csvs[0]
 foldername = directory_name.split("/")
 foldername = foldername[-2]
 fileCountMap = CreateCountMap(countFilename)
-featureMap = ExtractAllFeatures(directory_name, dirFiles)
+featureMap = ExtractAllFeatures(directory_name, dirFiles, fftExtractor)
 print "Done processing files"
 WriteOutputFile(foldername, fileCountMap, featureMap)
