@@ -6,36 +6,76 @@ import numpy
 import csv
 from PIL import Image
 from pybrain.supervised.trainers import BackpropTrainer
+from sklearn import svm
 
 def getFeaturesFromFile(filename):
 	im = Image.open(filename).convert('L')
 	return numpy.array(im.getdata())
 
 numPixels = 457 * 365
+numPixels = 89 * 221
 
-# create the net
-net = buildNetwork(numPixels, 100, 1)
-
-# create the dataset
-ds = SupervisedDataSet(numPixels, 1)
-
-#find counts and image filenames
-dataCSV = open('cell_counts.csv')
+clf = svm.LinearSVC()
+X = []
+y = []
+dataCSV = open('data/Originals/D10415/D10415_CellCountResults_2016-02-12_13-21-32.974_ManualSequence_2016-02-12-13-20-40.370_After_OEP_loading.csv')
 reader = csv.reader(dataCSV)
-data = {}
+first = True
 for row in reader:
-	data[row[0]] = float(row[1])
+	if first:
+		first = False
+		continue
+	numCells = 0
+	if float(row[4]) == 0:
+		continue
+	if float(row[4]) == 1:
+		numCells = 1
+	elif float(row[4]) > 1:
+		numCells = 2
+	y.append(numCells)
+	filename = "data/Originals/D10415/" + row[3] + ".tiff"
+	print filename, numCells
+	im = Image.open(filename).convert('L')
+	resized = list(im.getdata())[:numPixels]
+	X.append(resized)
 
-# add the files to the dataset
-for key, numCells in data.items():
-	ds.addSample(getFeaturesFromFile(key), (numCells,))
+clf.fit(X,y)
+prediction = clf.predict(X)
 
-# train the network
-trainer = BackpropTrainer(net, ds)
-for i in range(100):
-	print trainer.train()
+numWrong = 0
+numNotZero = 0
+for i in range(len(y)):
+	print y[i], prediction[i]
+	if not y[i] == prediction[i]:
+		numWrong += 1
+	if not prediction[i] == 0:
+		numNotZero += 1
+print "Number missed: " + str(numWrong)
+print "Number not predicted zero: " + str(numNotZero)
 
-# activate the net on the dataset to see what we get
-for key, numCells in data.items():
-	guess = net.activate(getFeaturesFromFile(key))
-	print guess, numCells
+# # create the net
+# net = buildNetwork(numPixels, 100, 1)
+#
+# # create the dataset
+# ds = SupervisedDataSet(numPixels, 1)
+#
+# #find counts and image filenames
+# dataCSV = open('cell_counts.csv')
+# reader = csv.reader(dataCSV)
+# data = {}
+# for row in reader:
+# 	data[row[0]] = float(row[1])
+#
+# # add the files to the dataset
+# for key, numCells in data.items():
+# 	ds.addSample(getFeaturesFromFile(key), (numCells,))
+#
+# # train the network
+# trainer = BackpropTrainer(net, ds)
+# for i in range(100):
+# 	print trainer.train()
+#
+# # activate the net on the dataset to see what we get
+# for key, numCells in data.items():
+# 	guess = net.activate(getFeaturesFromFile(key))
+# 	print guess, numCells

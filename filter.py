@@ -16,10 +16,12 @@ dirFiles = listdir(directory_name)
 csvFilename = directory_name
 fileHistMap = {}
 fileCountMap = {}
+zeroCountGrad = None
 for filename in dirFiles:
     if not filename.endswith('tiff'):
         if filename.endswith('csv'):
             csvFilename += filename
+            print csvFilename
             subprocess.call("cut -d, -f4,6 < " + csvFilename + " > temp.txt", shell=True)
             with open("temp.txt") as f:
                 for line in f:
@@ -85,8 +87,8 @@ for filename in dirFiles:
             nextBinIdx = (binIdx + 1)%numBins
         histogram[binIdx] += (binSize - abs(remainder))/binSize*magnitude
         histogram[nextBinIdx] += abs(remainder)/binSize*magnitude
-    for i in range(numBins):
-        histogram[i] /= (total * 1.0)
+    # for i in range(numBins):
+    #     histogram[i] /= (total * 1.0)
     filenumber = filename.split(".")
     fileHistMap[filenumber[0]] = histogram
     # print filenumber[0], histogram

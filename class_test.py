@@ -13,7 +13,7 @@ alldata = ClassificationDataSet(16, 1, nb_classes=3)
 uncloned = ClassificationDataSet(16, 1, nb_classes=3)
 expected = []
 
-with open("d10482.csv") as f:
+with open("D10415.csv") as f:
 	for line in f:
 		vals = line.split(",")
 		hist = [float(x) for x in vals[:-1]]
@@ -23,11 +23,11 @@ with open("d10482.csv") as f:
 		data.append((numpy.array(hist), klass))
 		expected.append(klass)
 
-# alldata._convertToOneOfMany()
+alldata._convertToOneOfMany()
 
 # create the net
-net = buildNetwork(alldata.indim, 16, 1, outclass=SoftmaxLayer)
-# net = buildNetwork(alldata.indim, 16, alldata.outdim, outclass=SoftmaxLayer)
+# net = buildNetwork(alldata.indim, 16, 1, outclass=SoftmaxLayer)
+net = buildNetwork(alldata.indim, 16, alldata.outdim, outclass=SoftmaxLayer)
 # net = buildNetwork(alldata.indim, 16, 1)
 
 # # create the dataset
