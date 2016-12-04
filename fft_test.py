@@ -22,11 +22,17 @@ scaled = convert8Bit(freq_abs)
 radius = 86 / 6 * 0.9
 midX = 86/2
 midY = 172/2
+margin = midX/10
 for x in range(86):
     for y in range(172):
-        if math.hypot(midX-x, midY-y) > radius:
-            if not scaled[y, x] == 0:
-                freq[y,x] = 0
+        if not scaled[y, x] == 0:
+            dist = math.hypot(midX-x, midY-y)
+            if dist > radius:
+                if dist >= margin + radius:
+                    freq[y, x] = 0
+                else:
+                    freq[y, x] = freq[y,x] * (margin - (dist-radius)) / margin
+            #     freq[y,x] = 0
 
 # scaled = convert8Bit(freq)
 # res = Image.fromarray(scaled)
