@@ -6,6 +6,7 @@ import sys
 import csv
 import subprocess
 from os import listdir, path
+from fft_extractor import fftExtractor
 
 def CreateCountMap(csvFilename):
     fileCountMap = {}
