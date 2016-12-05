@@ -56,8 +56,8 @@ def WriteOutputFile(foldername, fileCountMap, featureMap):
     with open(foldername + ".csv", "w") as myfile:
         wr = csv.writer(myfile)
         for filenum, count in fileCountMap.iteritems():
-            if count > 0:
-                count = 1 # since we only care about 0, 1, or more than 1
+            if count > 1:
+                count = 2 # since we only care about 0, 1, or more than 1
             outList = list(featureMap[filenum])
             outList.append(count)
             wr.writerow(outList)

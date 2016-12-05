@@ -17,7 +17,7 @@ def getFeaturesFromFile(filename):
 	reader = csv.reader(dataCSV)
 	for row in reader:
 		X.append([float(i) for i in row[0:-1]])
-		y.append(float(row[-1]))
+		y.append(int(row[-1]))
 	return X,y
 	# im = Image.open(filename).convert('L')
 	# return numpy.array(im.getdata())
@@ -61,16 +61,16 @@ clf.fit(X,y)
 print "Running prediction"
 prediction = clf.predict(X)
 
-numWrong = 0
-numNotZero = 0
+numCorrect = [0]*3
+numTotal = [0]*3
 for i in range(len(y)):
 	print y[i], prediction[i]
-	if not y[i] == prediction[i]:
-		numWrong += 1
-	if not prediction[i] == 0:
-		numNotZero += 1
-print "Number missed: " + str(numWrong)
-print "Number not predicted zero: " + str(numNotZero)
+	numTotal[y[i]] += 1
+	if y[i] == prediction[i]:
+		numCorrect[y[i]] += 1
+print "Number correct: " + str(numCorrect)
+print "Percentage: " + str(float(numCorrect[0])/numTotal[0]) + ", " + str(float(numCorrect[1])/numTotal[1]) + ", " + str(float(numCorrect[2])/numTotal[2])
+print "Total percentage: " + str(float(sum(numCorrect)/sum(numTotal)))
 
 # # create the net
 # net = buildNetwork(numPixels, 100, 1)
