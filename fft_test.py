@@ -9,14 +9,16 @@ def convert8Bit(arr):
     result = np.round(arr / maxVal * 255)
     return result
 
-im = Image.open('11.tiff')
+im = Image.open('11.png')
 im_arr = np.array(im)
 freq = np.fft.fft2(im_arr)
 freq = np.fft.fftshift(freq)
 freq_abs = np.abs(freq)
 scaled = convert8Bit(freq_abs)
-# res = Image.fromarray(scaled)
-# res.save('freq_shift.tiff')
+res = Image.fromarray(scaled)
+if res.mode != 'RGB':
+    res = res.convert('RGB')
+res.save('freq_shift.png')
 
 #should probably not have this hard-coded
 radius = 86 / 6 * 0.9
@@ -34,9 +36,11 @@ for x in range(86):
                     freq[y, x] = freq[y,x] * (margin - (dist-radius)) / margin
             #     freq[y,x] = 0
 
-# scaled = convert8Bit(freq)
-# res = Image.fromarray(scaled)
-# res.save('freq_masked.tiff')
+scaled = convert8Bit(np.abs(freq))
+res = Image.fromarray(scaled)
+if res.mode != 'RGB':
+    res = res.convert('RGB')
+res.save('freq_masked.png')
 freq = np.fft.fftshift(freq)
 
 image = np.fft.ifft2(freq)
