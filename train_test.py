@@ -17,9 +17,9 @@ def getFeaturesFromFile(filename):
 		y.append(int(row[-1]))
 	return X,y
 
-ds = ClassificationDataSet(1600, 1, nb_classes=3)
-net = buildNetwork(ds.indim, 16, ds.outdim, outclass=SoftmaxLayer)
-# clf = svm.LinearSVC()
+# ds = ClassificationDataSet(1600, 1, nb_classes=3)
+# net = buildNetwork(ds.indim, 16, ds.outdim, outclass=SoftmaxLayer)
+clf = svm.LinearSVC()
 if len(sys.argv) < 3:
     print "please specify filenames for training and testing"
     sys.exit()
@@ -27,27 +27,28 @@ train_filename = sys.argv[1]
 test_filename = sys.argv[2]
 print "Getting training features from " + train_filename
 X,y = getFeaturesFromFile(train_filename)
-print "Fitting to features"
-for i in range(len(y)):
-	ds.addSample(X[i], [y[i]])
+# print "Fitting to features"
+# for i in range(len(y)):
+# 	ds.addSample(X[i], [y[i]])
+#
+# ds._convertToOneOfMany
 
-ds._convertToOneOfMany
-
-# clf.fit(X,y)
-trainer = BackpropTrainer(net, dataset=ds, momentum=0.1,
-                              verbose=True, weightdecay=0.01)
-for i in range(100):
-	print trainer.train()
+print "Fit clf"
+clf.fit(X,y)
+# trainer = BackpropTrainer(net, dataset=ds, momentum=0.1,
+#                               verbose=True, weightdecay=0.01)
+# for i in range(100):
+# 	print trainer.train()
 
 print "Getting testing features from " + test_filename
-X,y = getFeaturesFromFile(train_filename)
+X,y = getFeaturesFromFile(test_filename)
 
-# print "Running prediction"
-# prediction = clf.predict(X)
-prediction = []
-for i in range(len(y)):
-	guess = net.activate(X[i])
-	prediction.append(guess)
+print "Running prediction"
+prediction = clf.predict(X)
+# prediction = []
+# for i in range(len(y)):
+# 	guess = net.activate(X[i])
+# 	prediction.append(guess)
 
 numCorrect = [0]*3
 numTotal = [0]*3
