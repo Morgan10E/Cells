@@ -64,11 +64,11 @@ prediction = clf.predict(X)
 numCorrect = [0]*3
 numTotal = [0]*3
 for i in range(len(y)):
-	print y[i], prediction[i]
+	# print y[i], prediction[i]
 	numTotal[y[i]] += 1
 	if y[i] == prediction[i]:
 		numCorrect[y[i]] += 1
-print "Number correct: " + str(numCorrect)
+print "Number correct: " + str(numCorrect) + " out of " + str(numTotal)
 print "Percentage: " + str(float(numCorrect[0])/numTotal[0]) + ", " + str(float(numCorrect[1])/numTotal[1]) + ", " + str(float(numCorrect[2])/numTotal[2])
 print "Total percentage: " + str(float(sum(numCorrect)/sum(numTotal)))
 

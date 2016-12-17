@@ -14,12 +14,15 @@ def getFeaturesFromFile(filename):
 	reader = csv.reader(dataCSV)
 	for row in reader:
 		X.append([float(i) for i in row[0:-1]])
-		y.append(int(row[-1]))
+		klass = int(float(row[-1]))
+		if klass > 1:
+			klass = 1
+		y.append(klass)
 	return X,y
 
 # ds = ClassificationDataSet(1600, 1, nb_classes=3)
 # net = buildNetwork(ds.indim, 16, ds.outdim, outclass=SoftmaxLayer)
-clf = svm.LinearSVC()
+clf = svm.SVC()
 if len(sys.argv) < 3:
     print "please specify filenames for training and testing"
     sys.exit()
@@ -50,13 +53,14 @@ prediction = clf.predict(X)
 # 	guess = net.activate(X[i])
 # 	prediction.append(guess)
 
-numCorrect = [0]*3
-numTotal = [0]*3
+numCorrect = [0]*2
+numTotal = [0]*2
 for i in range(len(y)):
 	print y[i], prediction[i]
 	numTotal[y[i]] += 1
 	if y[i] == prediction[i]:
 		numCorrect[y[i]] += 1
 print "Number correct: " + str(numCorrect) + " out of " + str(numTotal)
-print "Percentage: " + str(float(numCorrect[0])/numTotal[0]) + ", " + str(float(numCorrect[1])/numTotal[1]) + ", " + str(float(numCorrect[2])/numTotal[2])
+print "Percentage: " + str(float(numCorrect[0])/numTotal[0]) + ", " + str(float(numCorrect[1])/numTotal[1])# + ", " + str(float(numCorrect[2])/numTotal[2])
 print "Total percentage: " + str(float(sum(numCorrect))/sum(numTotal))
+print len(prediction)

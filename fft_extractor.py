@@ -16,12 +16,14 @@ def fftExtractor(imageFileName, size):
     freq_abs = np.abs(freq)
     scaled = convert8Bit(freq_abs)
 
-    height = scaled.shape[0]
-    width = scaled.shape[1]
+    height = size[0]
+    width = size[1]
     radius = width / 6 * 0.9
+    # radius = 9
     midX = width/2
     midY = height/2
     margin = midX/10
+    # margin = 4
     for x in range(width):
         for y in range(height):
             if not scaled[y, x] == 0:
@@ -34,7 +36,8 @@ def fftExtractor(imageFileName, size):
                 #     freq[y,x] = 0
 
     freq = np.fft.fftshift(freq)
-    windowRad = int(radius + margin)
-    center_freq = freq[midY - windowRad:midY + windowRad, \
-        midX - windowRad:midY + windowRad]
-    return np.ravel(center_freq)
+    # windowRad = int(radius + margin)
+    windowRad = 20
+    center_freq = freq[midY - windowRad:midY + windowRad, midX - windowRad:midX + windowRad]
+    # print center_freq.shape, center_freq.size
+    return np.ravel(abs(center_freq))
