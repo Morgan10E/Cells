@@ -1,0 +1,8 @@
+All of the code to run is written in python.
+Run feature_extractor.py with the feature extraction
+function defined to generate features from the sample
+images. Use "cat" to put files together into training
+and testing data, and use the different test files -
+pca.py, kmeans.py, qda.py, and train_test.py - to see
+how the algorithm performs. fft_extractor.py does the actual
+fourier analysis.
